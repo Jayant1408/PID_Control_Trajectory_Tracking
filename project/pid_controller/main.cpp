@@ -25,6 +25,7 @@
 #include <iostream>
 #include <fstream>
 #include <typeinfo>
+#include <chrono>
 
 #include "json.hpp"
 #include <carla/client/ActorBlueprint.h>
@@ -321,9 +322,15 @@ int main ()
           path_planner(x_points, y_points, v_points, yaw, velocity, goal, is_junction, tl_state, spirals_x, spirals_y, spirals_v, best_spirals);
 
           // Save time and compute delta time
-          time(&timer);
-          new_delta_time = difftime(timer, prev_timer);
-          prev_timer = timer;
+          // time(&timer);
+          // new_delta_time = difftime(timer, prev_timer);
+          // prev_timer = timer;
+
+          static auto prev_time = std::chrono::high_resolution_clock::now();
+          auto current_time = std::chrono::high_resolution_clock::now();
+          new_delta_time = std::chrono::duration<double>(current_time - prev_time).count();
+          prev_time = current_time;
+
 
           ////////////////////////////////////////
           // Steering control
@@ -351,6 +358,9 @@ int main ()
           x_points[idx_closest_point],
           y_points[idx_closest_point]
           ) - yaw;
+
+          while (error_steer > M_PI) error_steer -= 2.0 * M_PI;
+          while (error_steer < -M_PI) error_steer += 2.0 * M_PI;
           
 
           /**
