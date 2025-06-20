@@ -214,34 +214,34 @@ int main ()
   time_t timer;
   time(&prev_timer);
 
+
   // initialize pid steer
   /**
   * TODO (Step 1): create pid (pid_steer) for steer command and initialize values
   **/
-
-  // initialize pid throttle
-  /**
-  * TODO (Step 1): create pid (pid_throttle) for throttle command and initialize values
-  **/
-  
   PID pid_steer = PID();
   // CANDO: Set appropriate gain values here
   // CASE 1 : Using the P-controller (proportional-gain only):
-  // pid_steer.init_controller(1.0, 0.0, 0.0, 1.2, -1.2);
+  // pid_steer.Init(1.0, 0.0, 0.0, 1.2, -1.2);
   // CASE 2 : Using the PD-controller (proportional-derivative gain only):
-  // pid_steer.init_controller(1.0, 0.0, 1.0, 1.2, -1.2);
+  // pid_steer.Init(1.0, 0.0, 1.0, 1.2, -1.2);
   // CASE 3 : Using the PID-controller (proportional-integral-derivative gain):
-  // pid_steer.init_controller(1.0, 1.0, 1.0, 1.2, -1.2);
+  // pid_steer.Init(1.0, 1.0, 1.0, 1.2, -1.2);
   // Final run (I achieved the best results, i.e., no collisions, with these)
-  pid_steer.init_controller(0.3, 0.0025, 0.17, 0.60, -0.60);
+  pid_steer.Init(0.3, 0.0025, 0.17, 0.60, -0.60);
+
+    // initialize pid throttle
+  /**
+  * TODO (Step 1): create pid (pid_throttle) for throttle command and initialize values
+  **/
   PID pid_throttle = PID();
   // CASE 1 : Using the P-controller (proportional-gain only):
-  // pid_throttle.init_controller(1.0, 0.0, 0.0, 1.0, -1.0);
+  // pid_throttle.Init(1.0, 0.0, 0.0, 1.0, -1.0);
   // CASE 2 : Using the PD-controller (proportional-derivative gain only):
-  // pid_throttle.init_controller(1.0, 0.0, 1.0, 1.0, -1.0);
+  // pid_throttle.Init(1.0, 0.0, 1.0, 1.0, -1.0);
   // CASE 3 : Using the PID-controller (proportional-integral-derivative gain):
-  // pid_throttle.init_controller(1.0, 1.0, 1.0, 1.0, -1.0);
-  pid_throttle.init_controller(0.21, 0.0006, 0.080, 1.0, -1.0);
+  // pid_throttle.Init(1.0, 1.0, 1.0, 1.0, -1.0);
+  pid_throttle.Init(0.21, 0.0006, 0.080, 1.0, -1.0);
 
 
   h.onMessage([&pid_steer, &pid_throttle, &new_delta_time, &timer, &prev_timer, &i, &prev_timer](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
