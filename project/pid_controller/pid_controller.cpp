@@ -35,17 +35,10 @@ void PID::UpdateError(double cte) {
    /**
    * TODO: Update PID errors based on cte.
    **/
-  this->error_p = cte;
-  if(this->delta_t > 0.0)
-  {
-      this->error_d = (cte - error_p) / this->delta_t;
-  }
-  else
-  {
-   this->error_d = 0.0;
-  }
-  this->error_i += cte * this->delta_t;
-}
+   this->error_d = (this->delta_t > 0.0) ? (cte - this->error_p) / this->delta_t : 0.0;
+   this->error_p = cte;  // Set current error after calculating derivative
+   this->error_i += cte * this->delta_t;
+ }
 
 double PID::TotalError() {
    /**
