@@ -251,13 +251,13 @@ int main ()
   PID pid_steer = PID();
   // CANDO: Set appropriate gain values here
   // CASE 1 : Using the P-controller (proportional-gain only):
-  // pid_steer.Init(1.0, 0.0, 0.0, 1.2, -1.2);
+  // pid_steer.init_controller(1.0, 0.0, 0.0, 1.2, -1.2);
   // CASE 2 : Using the PD-controller (proportional-derivative gain only):
-  // pid_steer.Init(1.0, 0.0, 1.0, 1.2, -1.2);
+  // pid_steer.init_controller(1.0, 0.0, 1.0, 1.2, -1.2);
   // CASE 3 : Using the PID-controller (proportional-integral-derivative gain):
-  // pid_steer.Init(1.0, 1.0, 1.0, 1.2, -1.2);
+  // pid_steer.init_controller(1.0, 1.0, 1.0, 1.2, -1.2);
   // Final run (I achieved the best results, i.e., no collisions, with these)
-  pid_steer.Init(0.3, 0.0025, 0.17, 0.60, -0.60);
+  pid_steer.init_controller(0.3, 0.0025, 0.17, 0.60, -0.60);
 
     // initialize pid throttle
   /**
@@ -265,12 +265,12 @@ int main ()
   **/
   PID pid_throttle = PID();
   // CASE 1 : Using the P-controller (proportional-gain only):
-  // pid_throttle.Init(1.0, 0.0, 0.0, 1.0, -1.0);
+  // pid_throttle.init_controller(1.0, 0.0, 0.0, 1.0, -1.0);
   // CASE 2 : Using the PD-controller (proportional-derivative gain only):
-  // pid_throttle.Init(1.0, 0.0, 1.0, 1.0, -1.0);
+  // pid_throttle.init_controller(1.0, 0.0, 1.0, 1.0, -1.0);
   // CASE 3 : Using the PID-controller (proportional-integral-derivative gain):
-  // pid_throttle.Init(1.0, 1.0, 1.0, 1.0, -1.0);
-  pid_throttle.Init(0.21, 0.0006, 0.080, 1.0, -1.0);
+  // pid_throttle.init_controller(1.0, 1.0, 1.0, 1.0, -1.0);
+  pid_throttle.init_controller(0.21, 0.0006, 0.080, 1.0, -1.0);
 
 
   h.onMessage([&pid_steer, &pid_throttle, &new_delta_time, &timer, &prev_timer, &i, &prev_timer](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
@@ -322,14 +322,14 @@ int main ()
           path_planner(x_points, y_points, v_points, yaw, velocity, goal, is_junction, tl_state, spirals_x, spirals_y, spirals_v, best_spirals);
 
           // Save time and compute delta time
-          // time(&timer);
-          // new_delta_time = difftime(timer, prev_timer);
-          // prev_timer = timer;
+          time(&timer);
+          new_delta_time = difftime(timer, prev_timer);
+          prev_timer = timer;
 
-          static auto prev_time = std::chrono::high_resolution_clock::now();
-          auto current_time = std::chrono::high_resolution_clock::now();
-          new_delta_time = std::chrono::duration<double>(current_time - prev_time).count();
-          prev_time = current_time;
+          // static auto prev_time = std::chrono::high_resolution_clock::now();
+          // auto current_time = std::chrono::high_resolution_clock::now();
+          // new_delta_time = std::chrono::duration<double>(current_time - prev_time).count();
+          // prev_time = current_time;
 
 
           ////////////////////////////////////////
@@ -340,7 +340,7 @@ int main ()
           * TODO (step 3): uncomment these lines
           **/
 //           // Update the delta time with the previous command
-          pid_steer.UpdateDeltaTime(new_delta_time);
+          pid_steer.update_delta_time(new_delta_time);
 
           // Compute steer error
           // double error_steer;
@@ -372,8 +372,8 @@ int main ()
           * TODO (step 3): uncomment these lines
           **/
 //           // Compute control to apply
-          pid_steer.UpdateError(error_steer);
-          steer_output = pid_steer.TotalError();
+          pid_steer.update_error(error_steer);
+          steer_output = pid_steer.total_error();
 
           // Save data
           file_steer.seekg(std::ios::beg);
@@ -392,7 +392,7 @@ int main ()
           * TODO (step 2): uncomment these lines
           **/
 //           // Update the delta time with the previous command
-          pid_throttle.UpdateDeltaTime(new_delta_time);
+          pid_throttle.update_delta_time(new_delta_time);
 
           // Compute error of speed
           // double error_throttle;
@@ -413,8 +413,8 @@ int main ()
           * TODO (step 2): uncomment these lines
           **/
 //           // Compute control to apply
-          pid_throttle.UpdateError(error_throttle);
-          double throttle = pid_throttle.TotalError();
+          pid_throttle.update_error(error_throttle);
+          double throttle = pid_throttle.total_error();
 
           // Adapt the negative throttle to break
           if (throttle > 0.0) {

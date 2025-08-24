@@ -51,22 +51,22 @@ public:
     /*
     * Initialize PID.
     */
-    void Init(double Kp, double Ki, double Kd, double output_lim_maxi, double output_lim_mini);
+    void init_controller(double Kp, double Ki, double Kd, double output_lim_maxi, double output_lim_mini);
 
     /*
     * Update the PID error variables given cross track error.
     */
-    void UpdateError(double cte);
+    void update_error(double cte);
 
     /*
     * Calculate the total PID error.
     */
-    double TotalError();
+    double total_error();
   
     /*
     * Update the delta time.
     */
-    double UpdateDeltaTime(double new_delta_time);
+    double update_delta_time(double new_delta_time);
 };
 
 #endif //PID_CONTROLLER_H
