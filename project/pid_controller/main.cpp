@@ -322,14 +322,24 @@ int main ()
           path_planner(x_points, y_points, v_points, yaw, velocity, goal, is_junction, tl_state, spirals_x, spirals_y, spirals_v, best_spirals);
 
           // Save time and compute delta time
-          time(&timer);
-          new_delta_time = difftime(timer, prev_timer);
-          prev_timer = timer;
+          // time(&timer);
+          // new_delta_time = difftime(timer, prev_timer);
+          // prev_timer = timer;
 
-          // static auto prev_time = std::chrono::high_resolution_clock::now();
-          // auto current_time = std::chrono::high_resolution_clock::now();
-          // new_delta_time = std::chrono::duration<double>(current_time - prev_time).count();
-          // prev_time = current_time;
+          // // static auto prev_time = std::chrono::high_resolution_clock::now();
+          // // auto current_time = std::chrono::high_resolution_clock::now();
+          // // new_delta_time = std::chrono::duration<double>(current_time - prev_time).count();
+          // // prev_time = current_time;
+
+          static auto prev_time = std::chrono::high_resolution_clock::now();
+          auto current_time = std::chrono::high_resolution_clock::now();
+          new_delta_time = std::chrono::duration<double>(current_time - prev_time).count();
+          prev_time = current_time;
+
+
+          if (new_delta_time < 1e-4) {
+            new_delta_time = 1e-2; // 10 milliseconds fallback
+          }
 
 
           ////////////////////////////////////////
